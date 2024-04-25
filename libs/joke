@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+
+const exec = require('child_process').exec;
+
+function escapeHtml (unsafe) {
+  return unsafe
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'");
+}
+
+const curlCmd = 'curl -sb -H "Accept: application/json" "https://api.chucknorris.io/jokes/random"';
+
+exec(curlCmd, { timeout: 2500 }, function (stdErr, stdOut) {
+  if (!stdErr) {
+    const jokeData = JSON.parse(stdOut);
+    const joke = jokeData.value.replaceAll('Chuck Norris', 'Louis Borsu');
+    console.log(escapeHtml(joke));
+  } else {
+    console.log(escapeHtml('Louis Borsu gots internet even without internet'));
+  }
+});
